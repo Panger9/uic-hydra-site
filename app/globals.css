@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens taken from RiftOps (dark theme). Components use the semantic
+ * names below (bg-canvas, bg-surface, text-fg, border-line, text-accent, ...).
+ */
+@theme inline {
+  --color-canvas: var(--rx-canvas);
+  --color-surface: var(--rx-surface);
+  --color-surface-2: var(--rx-surface-2);
+  --color-surface-3: var(--rx-surface-3);
+  --color-line: var(--rx-line);
+  --color-line-strong: var(--rx-line-strong);
+  --color-fg: var(--rx-fg);
+  --color-fg-muted: var(--rx-fg-muted);
+  --color-fg-subtle: var(--rx-fg-subtle);
+  --color-accent: var(--rx-accent);
+  --color-accent-strong: var(--rx-accent-strong);
+  --color-on-accent: var(--rx-on-accent);
+  --color-win: var(--rx-win);
+  --color-loss: var(--rx-loss);
+  --color-inverse: var(--rx-inverse);
+  --color-on-inverse: var(--rx-on-inverse);
+  --color-focus: var(--rx-focus);
+
+  --font-sans: var(--font-inter), "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), "Segoe UI", system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: dark;
+  --rx-canvas: #05080d;
+  --rx-surface: #0b1017;
+  --rx-surface-2: #111821;
+  --rx-surface-3: #18212c;
+  --rx-line: rgb(240 230 210 / 0.07);
+  --rx-line-strong: rgb(240 230 210 / 0.13);
+  --rx-fg: #f0e6d2;
+  --rx-fg-muted: #a39d8f;
+  --rx-fg-subtle: #6c6a64;
+  --rx-accent: #ff2345;
+  --rx-accent-strong: #e0112f;
+  --rx-on-accent: #ffffff;
+  --rx-win: #34d399;
+  --rx-loss: #fb6a74;
+  --rx-inverse: #f0e6d2;
+  --rx-on-inverse: #05080d;
+  /* Focus and selection stay neutral: the red accent would read as an error. */
+  --rx-focus: rgb(240 230 210 / 0.6);
+  --rx-focus-soft: rgb(240 230 210 / 0.12);
+  --rx-shadow: 0 1px 0 rgb(255 255 255 / 0.03) inset, 0 24px 48px -32px rgb(0 0 0 / 0.8);
+}
+
+/* Base styles live in the base layer so utilities such as outline-none can override them. */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--rx-canvas);
+    color: var(--rx-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--rx-focus-soft);
+    color: var(--rx-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--rx-focus);
+    outline-offset: 2px;
+  }
+
+  :where(a[href], button:not(:disabled), label[for], [role="button"]:not([aria-disabled="true"])) {
+    cursor: pointer !important;
+  }
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.rx-card {
+  background: var(--rx-surface);
+  border: 1px solid var(--rx-line);
+  box-shadow: var(--rx-shadow);
+}
+
+.rx-scroll {
+  scrollbar-color: var(--rx-line-strong) transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+}
+
+@keyframes rx-body-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Hero light beam and staggered reveals. */
+@keyframes site-beam {
+  0% {
+    transform: translate3d(-30%, -30%, 0) rotate(45deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(30%, 30%, 0) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes site-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes site-lane-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.site-beam {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 180vmax;
+  height: 18rem;
+  margin: -9rem 0 0 -90vmax;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--rx-accent) 0%, transparent) 30%,
+    color-mix(in srgb, var(--rx-accent) 16%, transparent) 50%,
+    transparent 70%
+  );
+  filter: blur(40px);
+  animation: site-beam 9s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+.site-lane {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: 58%;
+  height: 1px;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, transparent, var(--rx-accent) 45%, transparent);
+  opacity: 0.55;
+  rotate: -18deg;
+  animation: site-lane-grow 1.6s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  pointer-events: none;
+}
+
+.site-reveal {
+  animation: site-reveal 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.site-grid {
+  background-image:
+    linear-gradient(to right, var(--rx-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--rx-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
