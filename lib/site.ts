@@ -1,7 +1,7 @@
 import { team } from "@/data/team";
 
 /** Team hub for members; the website only links to it. */
-export const hubUrl = "https://boellerbande.fp-labs.net/hub";
+export const hubUrl = "https://riftops.fp-labs.net/hub";
 
 // Operator details for § 5 DDG; Impressum and Datenschutz both read them from here.
 // A postal address can be added as further `address` lines.
